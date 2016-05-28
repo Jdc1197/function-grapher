@@ -44,6 +44,8 @@ Retrieved from: http://en.literateprograms.org/Hello_World_(C,_Cairo)?oldid=1038
 #define STEPS 50
 
 const double pi = 3.14159265L;
+void draw_function(cairo_t*, double);
+void draw_matrix(cairo_t*, matrix_t*, double, double, double, double);
 
 void paint(cairo_surface_t *cs, double st)
 {
@@ -92,7 +94,6 @@ void draw_matrix(cairo_t* c, matrix_t* m, double r, double g, double b, double s
     cairo_move_to(c, (m->x[0]*GRATIOX)+xdisplacement, (m->y[0]*GRATIOY)+ydisplacement);
     for ( int i = 0; i < m->size; i++)
     {
-        double sx = (i*SIZEX/m->size);           /* the x value on the screen */
         cairo_line_to(c, (m->x[i]*GRATIOX)+xdisplacement,(m->y[i]*GRATIOY)+(ydisplacement));
     }
     cairo_set_source_rgb(c, r, g, b);
