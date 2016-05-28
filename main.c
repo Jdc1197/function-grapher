@@ -31,10 +31,14 @@ Retrieved from: http://en.literateprograms.org/Hello_World_(C,_Cairo)?oldid=1038
 #define SIZEY 500
 
 /* Graph Size*/
-#define XMIN -10
-#define XMAX 10
-#define GSIZE (XMAX-XMIN)
-#define GRATIO (SIZEX/GSIZE)
+#define XMIN -12
+#define XMAX 12
+#define YMIN -12
+#define YMAX 12
+#define GSIZEX (XMAX-XMIN)
+#define GRATIOX (SIZEX/GSIZEX)
+#define GSIZEY (YMAX-YMIN)
+#define GRATIOY (SIZEY/GSIZEY)
 
 /* Steps */
 #define STEPS 50
@@ -78,13 +82,18 @@ void draw_function(cairo_t* c, double st)
     free_matrix(&m);
 }
 
+/* Draws a matrix 'm' onto cairo instance 'c' with size 's' and color 'r,g,b'*/
 void draw_matrix(cairo_t* c, matrix_t* m, double r, double g, double b, double s)
 {
-    cairo_move_to(c, m->x[0]*GRATIO, (m->y[0]*50)+SIZEY/2);
+    
+    double ydisplacement = SIZEY/2;
+    double xdisplacement = SIZEX/2;
+
+    cairo_move_to(c, (m->x[0]*GRATIOX)+xdisplacement, (m->y[0]*GRATIOY)+ydisplacement);
     for ( int i = 0; i < m->size; i++)
     {
         double sx = (i*SIZEX/m->size);           /* the x value on the screen */
-        cairo_line_to(c, /*sx*/(m->x[i]*GRATIO),(m->y[i]*50)+(SIZEY/2));
+        cairo_line_to(c, (m->x[i]*GRATIOX)+xdisplacement,(m->y[i]*GRATIOY)+(ydisplacement));
     }
     cairo_set_source_rgb(c, r, g, b);
     cairo_set_line_width(c, s);
