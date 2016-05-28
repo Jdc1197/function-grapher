@@ -36,9 +36,13 @@ Retrieved from: http://en.literateprograms.org/Hello_World_(C,_Cairo)?oldid=1038
 #define YMIN -12
 #define YMAX 12
 #define GSIZEX (XMAX-XMIN)
-#define GRATIOX (SIZEX/GSIZEX)
+#define GRATIOX (SIZEX/GSIZEX) /* GRATIOX is the ratio of screen size to graph size.*/
+                               /* you can use it to convert graph coordinates to actual screen coordinates.*/
 #define GSIZEY (YMAX-YMIN)
 #define GRATIOY (SIZEY/GSIZEY)
+
+#define GORGINX (SIZEX/2)+((XMAX+XMIN)/2)*GRATIOX
+#define GORGINY (SIZEY/2)+((YMAX+YMIN)/2)*GRATIOY
 
 /* Steps */
 #define STEPS 50
@@ -88,8 +92,8 @@ void draw_function(cairo_t* c, double st)
 void draw_matrix(cairo_t* c, matrix_t* m, double r, double g, double b, double s)
 {
     
-    double ydisplacement = SIZEY/2;
-    double xdisplacement = SIZEX/2;
+    double ydisplacement = GORGINY;
+    double xdisplacement = GORGINX;
 
     cairo_move_to(c, (m->x[0]*GRATIOX)+xdisplacement, (m->y[0]*GRATIOY)+ydisplacement);
     for ( int i = 0; i < m->size; i++)
