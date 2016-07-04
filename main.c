@@ -25,7 +25,7 @@
 #define GSIZEY (YMAX-YMIN)
 #define GRATIOY (SIZEY/GSIZEY)
 
-#define GORGINX (SIZEX/2)+((XMAX+XMIN)/2)*GRATIOX
+#define GORGINX (SIZEX/2)+((XMAX+XMIN)/-2)*GRATIOX
 #define GORGINY (SIZEY/2)+((YMAX+YMIN)/2)*GRATIOY
 
 /* Steps */
@@ -103,11 +103,10 @@ void draw_matrix(cairo_t* c, matrix_t* m, double r, double g, double b, double s
     
     double ydisplacement = GORGINY;
     double xdisplacement = GORGINX;
-
-    cairo_move_to(c, (m->x[0]*GRATIOX)+xdisplacement, (m->y[0]*GRATIOY)+ydisplacement);
+    cairo_move_to(c, (m->x[0]*GRATIOX)+xdisplacement, (-m->y[0]*GRATIOY)+ydisplacement);
     for ( int i = 0; i < m->size; i++)
     {
-        cairo_line_to(c, (m->x[i]*GRATIOX)+xdisplacement,(m->y[i]*GRATIOY)+(ydisplacement));
+        cairo_line_to(c, (m->x[i]*GRATIOX)+xdisplacement,(-m->y[i]*GRATIOY)+(ydisplacement));
     }
     cairo_set_source_rgb(c, r, g, b);
     cairo_set_line_width(c, s);
