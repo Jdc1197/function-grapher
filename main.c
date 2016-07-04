@@ -32,7 +32,10 @@
 #define STEPS 50
 
 const double pi = 3.14159265L;
-void draw_function(cairo_t*, double);
+
+matrix_t generate_matrix(double (*f)(double),double, double, int);
+double s(double x) {return cos(x);}
+
 void draw_matrix(cairo_t*, matrix_t*, double, double, double, double);
 
 void draw_grid(cairo_t *cr)
@@ -69,38 +72,33 @@ void paint(cairo_surface_t *cs, double st)
     cairo_rectangle(c, 0.0, 0.0, SIZEX, SIZEY);
     cairo_fill(c);
     
-    draw_function(c, st);
-	
+    matrix_t m = generate_matrix(s, -2*pi, 2*pi, 100);
+    draw_matrix(c,&m,.5,0,0,1.5);
+    draw_grid(c);
     cairo_show_page(c);
-cairo_destroy(c);
+    cairo_destroy(c);
 }
 
-void draw_function(cairo_t* c, double st)
+/* Generates a matrix from a function*/
+matrix_t generate_matrix(   double (*f)(double),    /* function to translate x->y*/
+                            double min_x,           /* min and max x */ 
+                            double max_x,
+                            int steps)              /* matrix size*/
 {
-    matrix_t m = create_matrix(STEPS);
-    for (int i = 0; i < STEPS; i++)
-    {
-        m.x[i] = (5+i*2*pi/STEPS);
-        m.y[i] = -(sin(m.x[i]-5));
-        m.z[i] = 0;
-    }
-    pmatrix_t pm = convert_to_pmatrix(m, 0, 0, 0);
-    shift_pmatrix(&pm,0,st);
-    matrix_t m2 = convert_to_matrix(pm);
-    draw_matrix(c, &m2, .5, .5, .5, 2.0);
-    free_matrix(&m2);
-    free_pmatrix(&pm);
     
-    //shift_pmatrix(&pm, 0, 0);
-    //m = convert_to_matrix(pm);
-    draw_matrix(c, &m, 0.0, 0.0, 0.0, 2.0);
-    free_matrix(&m);
+    matrix_t m = create_matrix(steps);
+    for (int i = 0; i < steps; i++)
+    {
+        m.x[i] = min_x+((max_x-min_x)*((double)i/(steps-1)));
+        m.y[i] = f((m.x[i]));
+        m.z[i] = 1;
+    } 
+    return m;
 }
 
 /* Draws a matrix 'm' onto cairo instance 'c' with size 's' and color 'r,g,b'*/
 void draw_matrix(cairo_t* c, matrix_t* m, double r, double g, double b, double s)
 {
-    
     double ydisplacement = GORGINY;
     double xdisplacement = GORGINX;
     cairo_move_to(c, (m->x[0]*GRATIOX)+xdisplacement, (-m->y[0]*GRATIOY)+ydisplacement);
