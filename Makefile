@@ -25,4 +25,6 @@ main.o: main.c
 matrix.o: matrix.c
 	cc -o matrix.o ${CFLAGS} -c matrix.c
 clean:
-	rm *.o *.png
+	rm *.o *.png out.mp4
+video:
+	ffmpeg -framerate 60 -i IMG%03d.png -c:v libx264 -y -r 30 -pix_fmt yuv420p out.mp4
