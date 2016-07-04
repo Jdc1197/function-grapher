@@ -35,6 +35,31 @@ const double pi = 3.14159265L;
 void draw_function(cairo_t*, double);
 void draw_matrix(cairo_t*, matrix_t*, double, double, double, double);
 
+void draw_grid(cairo_t *cr)
+{
+    cairo_set_source_rgb(cr, 0.1, 0.1, 0.1); 
+    cairo_select_font_face(cr, "Arial",
+    CAIRO_FONT_SLANT_NORMAL,
+    CAIRO_FONT_WEIGHT_NORMAL);
+    cairo_set_font_size(cr, 13);
+
+    cairo_move_to(cr, 0, 10);
+    cairo_show_text(cr, "f(x) = cosx");  
+    /* Vertical gridline */
+    cairo_move_to(cr, GORGINX,0);
+    cairo_line_to(cr, GORGINX, SIZEY);
+    cairo_set_source_rgb(cr, 0, 0, 0);
+    cairo_set_line_width(cr, 2.0);   
+    cairo_stroke(cr); 
+    
+    /* Horizontal gridline */
+    cairo_move_to(cr, 0, GORGINY);
+    cairo_line_to(cr, SIZEX, GORGINY);
+    cairo_set_source_rgb(cr, 0, 0, 0);
+    cairo_set_line_width(cr, 2.0);   
+    cairo_stroke(cr);  
+}
+
 void paint(cairo_surface_t *cs, double st)
 {
 	cairo_t *c;
