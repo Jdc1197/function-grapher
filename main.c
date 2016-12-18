@@ -91,7 +91,6 @@ matrix_t generate_matrix(   double (*f)(double),    /* function to translate x->
     {
         m.x[i] = min_x+((max_x-min_x)*((double)i/(steps-1)));
         m.y[i] = f((m.x[i]));
-        m.z[i] = 1;
     } 
     return m;
 }
@@ -140,7 +139,7 @@ void showxlib()
 	while(1) {
 		XNextEvent(dpy, &e);
 		if(e.type==Expose && e.xexpose.count<1) {
-			paint(cs, pi/12);
+			paint(cs, 0);
 		} else if(e.type==ButtonPress) break;
 	}
 
@@ -148,51 +147,12 @@ void showxlib()
 	XCloseDisplay(dpy);
 }
 
-/*
-    render_rotationl_animation
-        Renders an animation rotating a matrix around.
-*/
-void render_rotation_animation( matrix_t m,     /* The matrix to rotate*/
-                                double theta,   /* The max theta rotation */
-                                double phi,     /* The max phi rotation */
-                                int steps )     /* The number of animation frames */
-{
-    cairo_surface_t *cs;
-    cs=cairo_image_surface_create(CAIRO_FORMAT_ARGB32, SIZEX, SIZEY);
-    
-	for (int i = 0; i <= steps; i++)
-    {
-        pmatrix_t pm = convert_to_pmatrix(m,0,0,0);
-        cairo_t* c=cairo_create(cs);
-	    /* Draw BG */
-        cairo_set_source_rgb(c, 1.0, 1.0, 1.0);
-        cairo_rectangle(c, 0.0, 0.0, SIZEX, SIZEY);
-        cairo_fill(c);
-        double t = ((double)(i)/(double)(steps));
-	    /* Print rendering progress */
-        printf("%f\n", (2*pi)*t);
-        shift_pmatrix(&pm, theta*t, phi*t);
-        matrix_t matr = convert_to_matrix(pm); 
-        draw_matrix(c,&matr,.5,0,0,1.5);
-        draw_grid(c);
-        cairo_show_page(c);
-        cairo_destroy(c);
-	    /* Make filename*/
-        char fn[11] = "IMG000.png\0";
-        fn[5] = (char)((i%10)+48);
-        fn[4] = (char)(((int)(i/10)%10)+48); 
-        fn[3] = (char)(((int)(i/100)%10)+48);
-        cairo_surface_write_to_png(cs, fn);
-    }
-	cairo_surface_destroy(cs);
-}
-
 int main(int argc, char *argv[])
 {
     srand(time(NULL));
-    matrix_t m = generate_matrix(s, -2*pi, 2*pi, 100);
-    render_rotation_animation(m,2*pi,pi,300);    
-    //showxlib();
+    //matrix_t m = generate_matrix(s, -2*pi, 2*pi, 100);
+    //render_rotation_animation(m,2*pi,pi,300);    
+    showxlib();
 	return 0;
 }
 
