@@ -34,8 +34,10 @@
 const double pi = 3.14159265L;
 
 matrix_t generate_matrix(double (*f)(double),double, double, int);
-double s(double x) {return cos(x);}
+matrix_t generate_matrix_parametric(double (*f)(double), double (*g)(double),double, double, int);
 
+double s(double x) {return sin(7*pi*x);}
+double s_0(double x) {return cos(5*pi*x);}
 void draw_matrix(cairo_t*, matrix_t*, double, double, double, double);
 
 void draw_grid(cairo_t *cr)
@@ -72,7 +74,7 @@ void paint(cairo_surface_t *cs, double st)
     cairo_rectangle(c, 0.0, 0.0, SIZEX, SIZEY);
     cairo_fill(c);
     
-    matrix_t m = generate_matrix(s, -2*pi, 2*pi, 100);
+    matrix_t m = generate_matrix_parametric(s,s_0, 0, 2, 1000);
     draw_matrix(c,&m,.5,0,0,1.5);
     draw_grid(c);
     cairo_show_page(c);
@@ -91,6 +93,21 @@ matrix_t generate_matrix(   double (*f)(double),    /* function to translate x->
     {
         m.x[i] = min_x+((max_x-min_x)*((double)i/(steps-1)));
         m.y[i] = f((m.x[i]));
+    } 
+    return m;
+}
+
+matrix_t generate_matrix_parametric(    double (*x)(double),    /* function for x(t) */
+                                        double (*y)(double),    /* function for y(t) */
+                                        double min_t,           /* min and max t */ 
+                                        double max_t,
+                                        int steps)              /* matrix size*/
+{
+    matrix_t m = create_matrix(steps);
+    for (int i = 0; i < steps; i++)
+    {
+        m.x[i] = x(min_t+((max_t-min_t)*((double)i/(steps-1))));
+        m.y[i] = y(min_t+((max_t-min_t)*((double)i/(steps-1))));
     } 
     return m;
 }
