@@ -17,13 +17,15 @@ LDFLAGS=-Wall -g `pkg-config --libs cairo` -lm  -lX11 -L/usr/X11R6/lib
 
 all: graph
 
-graph: main.o matrix.o
-	cc -o graph main.o matrix.o ${LDFLAGS}
+graph: main.o matrix.o matrix_gen.o
+	cc -o graph main.o matrix.o matrix_gen.o ${LDFLAGS}
 
 main.o: main.c
 	cc -o main.o ${CFLAGS} -c main.c
 matrix.o: matrix.c
 	cc -o matrix.o ${CFLAGS} -c matrix.c
+matrix_gen.o: matrix.c
+	cc -o matrix_gen.o ${CFLAGS} -c matrix_gen.c
 clean:
 	rm *.o *.png out.mp4
 video:
